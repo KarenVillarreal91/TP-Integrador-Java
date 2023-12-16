@@ -23,28 +23,33 @@ public class NuevoOradorController extends AppBaseServlet{
 				HttpServletRequest request, //aca viene lo que manda el usuario 
 				HttpServletResponse response /*manda el backend al frontend*/
 			) throws ServletException, IOException {
-		
-		//OradorRequest oradorJson = (OradorRequest )fromJSON(OradorRequest.class, request, response);
-		//obtengo el json desde el frontend
-		String json = super.toJson(request); 
-		
-		//convierto de json String a Objecto java usando libreria de jackson2
-		Orador oradorRequest = mapper.readValue(json, Orador.class);
-		
-		//creo mi orador con esos parametros
-		Orador nuevo = new Orador(
-				oradorRequest.getNombre(), 
-				oradorRequest.getApellido(),
-				oradorRequest.getMail(),
-				oradorRequest.getTema()
-		);
-		
-		repository.save(nuevo);
-		
-		//ahora respondo al front: json, Convirtiendo el nuevo Orador a json
-		String jsonParaEnviarALFrontend = mapper.writeValueAsString(nuevo);
-		
-		response.getWriter().print(jsonParaEnviarALFrontend);
+		try{
+			//OradorRequest oradorJson = (OradorRequest )fromJSON(OradorRequest.class, request, response);
+			//obtengo el json desde el frontend
+			String json = super.toJson(request);
+
+			//convierto de json String a Objecto java usando libreria de jackson2
+			Orador oradorRequest = mapper.readValue(json, Orador.class);
+
+			//creo mi orador con esos parametros
+			Orador nuevo = new Orador(
+					oradorRequest.getNombre(),
+					oradorRequest.getApellido(),
+					oradorRequest.getMail(),
+					oradorRequest.getTema()
+			);
+
+			repository.save(nuevo);
+
+			//ahora respondo al front: json, Convirtiendo el nuevo Orador a json
+			String jsonParaEnviarALFrontend = mapper.writeValueAsString(nuevo);
+
+			response.getWriter().print(jsonParaEnviarALFrontend);
+		}
+		catch(Exception e){
+			response.getWriter().println(e.getMessage());
+			System.out.println(e.getMessage());
+		}
 	}
 
 	protected void doGet(

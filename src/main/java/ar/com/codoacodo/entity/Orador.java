@@ -10,6 +10,9 @@ public class Orador {
 	
 	//constructor/es
 	//usar cuando voy a enviar un objeto a la db
+	public Orador(){
+	}
+
 	//insert into orador (campos,..) values(...)
 	public Orador(String nombre, String apellido, String mail, String tema) {
 		init(nombre, apellido, mail, tema);
