@@ -3,7 +3,10 @@ package ar.com.codoacodo.repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ar.com.codoacodo.entity.Orador;
@@ -52,8 +55,9 @@ public class MySqlOradorRepository implements OradorRepository {
 				String apellido = res.getString(3);  
 				String tema = res.getString(4);  
 				String email = res.getString(5);  
-				
-			orador = new Orador(dbId, nombre, apellido, email, tema);
+				Date fecha_alta = res.getDate(6);
+
+			orador = new Orador(dbId, nombre, apellido, email, tema, Instant.ofEpochMilli(fecha_alta.getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
 			}
 			
 		} catch (Exception e) {
@@ -120,9 +124,10 @@ public class MySqlOradorRepository implements OradorRepository {
 				String nombre = res.getString(2);  
 				String apellido = res.getString(3);  
 				String tema = res.getString(4);  
-				String email = res.getString(5);  
-				
-				oradores.add(new Orador(dbId, nombre, apellido, email, tema));
+				String email = res.getString(5);
+				Date fecha_alta = res.getDate(6);
+
+				oradores.add(new Orador(dbId, nombre, apellido, email, tema, Instant.ofEpochMilli(fecha_alta.getTime()).atZone(ZoneId.systemDefault()).toLocalDate()));
 			}
 			
 		} catch (Exception e) {

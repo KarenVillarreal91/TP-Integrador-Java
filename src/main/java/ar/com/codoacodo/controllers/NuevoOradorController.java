@@ -24,6 +24,7 @@ public class NuevoOradorController extends AppBaseServlet{
 				HttpServletResponse response /*manda el backend al frontend*/
 			) throws ServletException, IOException {
 		try{
+
 			//OradorRequest oradorJson = (OradorRequest )fromJSON(OradorRequest.class, request, response);
 			//obtengo el json desde el frontend
 			String json = super.toJson(request);
@@ -55,15 +56,22 @@ public class NuevoOradorController extends AppBaseServlet{
 	protected void doGet(
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
-		
-		//ahora por medio del repository guarda en la db
-		List<Orador> listado = this.repository.findAll();
-		
-		//convierto Objecto java a json string
-		//ahora respondo al front: json, Convirtiendo el nuevo Orador a json
-		String jsonParaEnviarALFrontend = mapper.writeValueAsString(listado);
-		
-		response.getWriter().print(jsonParaEnviarALFrontend);
+
+		try{
+
+			//ahora por medio del repository guarda en la db
+			List<Orador> listado = this.repository.findAll();
+
+			//convierto Objecto java a json string
+			//ahora respondo al front: json, Convirtiendo el nuevo Orador a json
+			String jsonParaEnviarALFrontend = mapper.writeValueAsString(listado);
+
+			response.getWriter().print(jsonParaEnviarALFrontend);
+		}
+		catch(Exception e){
+			response.getWriter().println(e.getMessage());
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	protected void doDelete(
@@ -81,7 +89,7 @@ public class NuevoOradorController extends AppBaseServlet{
 	protected void doPut(
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
-		
+
 		String id  = request.getParameter("id");
 		
 		//ahora quiero los datos que viene en el body
@@ -94,11 +102,22 @@ public class NuevoOradorController extends AppBaseServlet{
 		Orador orador = this.repository.getById(Long.parseLong(id));
 		
 		//ahora actualizo los datos
-		orador.setApellido(oradorRequest.getApellido());
-		orador.setNombre(oradorRequest.getNombre());
-		orador.setMail(oradorRequest.getMail());
-		orador.setTema(oradorRequest.getTema());
-		
+		if(oradorRequest.getApellido() != ""){
+			orador.setApellido(oradorRequest.getApellido());
+		}
+
+		if(oradorRequest.getNombre() != ""){
+			orador.setNombre(oradorRequest.getNombre());
+		}
+
+		if(oradorRequest.getMail() != ""){
+			orador.setMail(oradorRequest.getMail());
+		}
+
+		if(oradorRequest.getTema() != ""){
+			orador.setTema(oradorRequest.getTema());
+		}
+
 		//ahora si, actualizo en la db!!
 		this.repository.update(orador);
 		
